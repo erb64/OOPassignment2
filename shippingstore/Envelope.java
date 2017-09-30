@@ -36,7 +36,7 @@ public class Envelope extends PackageOrder
      *
      */
 	public Envelope (String trackingnumber, String specification, String mailingclass, int height, int width){
-		super(trackingnumber, specification, mailingclass);
+		super(trackingnumber, "Envelope", specification, mailingclass);
 		this.height = height;
 		this.width = width;
 	}
@@ -58,4 +58,15 @@ public class Envelope extends PackageOrder
 	public int getWidth(){
 		return width;
 	}
+
+     /**
+     * This method returns the envelope's fields as a string representation.
+     *
+     * @return a <b><CODE>String</CODE></b> that lists the fields of the envelope
+     * object delineated by a space and in the same order as the constructor
+     */
+    @Override
+    public String toString() {
+        return super.toString() + " " + height + " " + width + "\n";
+    }
 }

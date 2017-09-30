@@ -36,7 +36,7 @@ public class Crate extends PackageOrder
      *
      */
 	public Crate (String trackingnumber, String specification, String mailingclass, Float loadweight, String content){
-		super(trackingnumber, specification, mailingclass);
+		super(trackingnumber, "Crate", specification, mailingclass);
 		this.loadweight = loadweight;
 		this.content = content;
 	}
@@ -58,4 +58,15 @@ public class Crate extends PackageOrder
 	public String getContent(){
 		return content;
 	}
+
+     /**
+     * This method returns the crate's fields as a string representation.
+     *
+     * @return a <b><CODE>String</CODE></b> that lists the fields of the crate
+     * object delineated by a space and in the same order as the constructor
+     */
+    @Override
+    public String toString() {
+        return super.toString() + " " + loadweight + " " + content + "\n";
+    }
 }

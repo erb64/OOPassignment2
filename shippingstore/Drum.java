@@ -36,7 +36,7 @@ public class Drum extends PackageOrder
      *
      */
 	public Drum (String trackingnumber, String specification, String mailingclass, String material, int diameter){
-		super(trackingnumber, specification, mailingclass);
+		super(trackingnumber, "Drum", specification, mailingclass);
 		this.material = material;
 		this.diameter = diameter;
 	}
@@ -58,4 +58,15 @@ public class Drum extends PackageOrder
 	public int getDiameter(){
 		return diameter;
 	}
+
+     /**
+     * This method returns the drum's fields as a string representation.
+     *
+     * @return a <b><CODE>String</CODE></b> that lists the fields of the drum
+     * object delineated by a space and in the same order as the constructor
+     */
+    @Override
+    public String toString() {
+        return super.toString() + " " + material + " " + diameter + "\n";
+    }
 }

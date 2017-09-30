@@ -1,4 +1,4 @@
-package shippingstore;
+ package shippingstore;
 
 /**
  * This class is a specialized representation of a package order, specific to boxes. 
@@ -36,7 +36,7 @@ public class Box extends PackageOrder
      *
      */
 	public Box (String trackingnumber, String specification, String mailingclass, int largestdimension, int volume){
-		super(trackingnumber, specification, mailingclass);
+		super(trackingnumber, "Box", specification, mailingclass);
 		this.largestdimension = largestdimension;
 		this.volume = volume;
 	}
@@ -58,4 +58,15 @@ public class Box extends PackageOrder
 	public int getVolume(){
 		return volume;
 	}
+
+     /**
+     * This method returns the box's fields as a string representation.
+     *
+     * @return a <b><CODE>String</CODE></b> that lists the fields of the box
+     * object delineated by a space and in the same order as the constructor
+     */
+    @Override
+    public String toString() {
+        return super.toString() + " " + largestdimension + " " + volume + "\n";
+    }
 }

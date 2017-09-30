@@ -1,22 +1,25 @@
 package shippingstore;
 
 import java.io.IOException;
-import java.io.FileReader;
-import java.io.PrintWriter;
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import java.util.ArrayList;
-import java.util.Scanner;
+//import java.util.Scanner;
 import java.util.Collections;
+import java.io.Serializable;
 
 /**
  * This class is used to represent a database interface for a list of
- * <CODE>Package Order</CODE>'s. It using a plain-text file "PackageOrderDB.txt"
+ * <CODE>Package Order</CODE>'s. It using a plain-text file "PackageDB.ser"
  * to store and write package order objects in readable text form. It contains
  * an <CODE>ArrayList</CODE> called <CODE>packageOrderList</CODE> to store the
  * database in a runtime friendly data structure. The <CODE>packageOrderList</CODE>
- * is written to "PackageOrderDB.txt" at the end of the <CODE>PackageDatabase</CODE> object's
+ * is written to "PackageDB.ser" at the end of the <CODE>PackageDatabase</CODE> object's
  * life by calling <CODE>flush()</CODE>. This class also provides methods for
- * adding, remove, and searching for shipping orders from the list.
+ * adding, remove, and searching for package orders from the list.
  *
  * @author Junye Wen, edited by Emily Beaudoin to fit this application
  */
@@ -25,7 +28,7 @@ public class PackageDatabase {
     private ArrayList<PackageOrder> packageOrderList;
 
     /**
-     * This constructor is hard-coded to open "<CODE>PackageDB.txt</CODE>" and
+     * This constructor is hard-coded to open "<CODE>PackageDB.ser</CODE>" and
      * initialize the <CODE>packageOrderList</CODE> with its contents. If no such file
      * exists, then one is created. The contents of the file are "loaded" into
      * the packageOrderList ArrayList in no particular order. The file is then closed
@@ -34,33 +37,41 @@ public class PackageDatabase {
      */
     public PackageDatabase() throws IOException {
         packageOrderList = new ArrayList<>();
-        Scanner orderScanner;
 
-        File dataFile = new File("PackageDB.txt");
+        FileInputStream fis = new FileInputStream("PackageDB.ser");
 
         // If data file does not exist, create it.
-        if (!dataFile.exists()) {
-            System.out.println("PackageDB.txt does not exist, creating one now . . .");
+        if (!(fis.available() > 0)) {
+            System.out.println("PackageDB.ser does not exist, creating one now . . .");
             //if the file doesn't exists, create it
-            PrintWriter pw = new PrintWriter("PackageDB.txt");
+            FileOutputStream fos = new FileOutputStream("PackageDB.ser");
             //close newly created file so we can reopen it
-            pw.close();
+            fos.close();
         }
+        else{
+            ObjectInputStream ois = new ObjectInputStream(fis);
 
-        orderScanner = new Scanner(new FileReader(dataFile));
+            while(ois.available() > 0){
+                packageOrderList.add((PackageOrder) ois.readObject());
 
-        //Initialize the Array List with package orders from PackageOrderDB.txt
-        while (orderScanner.hasNextLine()) {
+            }
 
-            // split values using the space character as separator
-            String[] temp = orderScanner.nextLine().split(" ");
 
-            packageOrderList.add(new PackageOrder(temp[0], temp[1], temp[2], temp[3],
-                    Float.parseFloat(temp[4]), Integer.parseInt(temp[5])));
+        
+            // //Initialize the Array List with package orders from PackageOrderDB.ser
+            // while (orderScanner.hasNextLine()) {
+        
+            //     // split values using the space character as separator
+            //     String[] temp = orderScanner.nextLine().split(" ");
+        
+            //     //add in some different stuff for the different types
+            //     packageOrderList.add(new PackageOrder(temp[0], temp[1], temp[2], temp[3],
+            //             Float.parseFloat(temp[4]), Integer.parseInt(temp[5])));
+            //     }
+        
+                //Package order list is now in the ArrayList completely so we can close the file
+                fis.close();
         }
-
-        //Package order list is now in the ArrayList completely so we can close the file
-        orderScanner.close();
     }
 
     /**
@@ -86,10 +97,24 @@ public class PackageDatabase {
 
 
         for (PackageOrder p : orders){
+
             System.out.printf("|%10s|%9s|%15s|%12s|%10.2f|%10d|\n", 
                               p.getTrackingNumber(), p.getType(), 
-                              p.getSpecification(), p.getMailingClass(), 
-                              p.getWeight(), p.getVolume() );
+                              p.getSpecification(), p.getMailingClass());
+
+            if(p.getType().equals("Envelope")){
+
+            }
+            else if (p.getType().equals("Box")){
+
+            }
+            else if (p.getType().equals("Crate")){
+
+            }
+            else { //type is drum
+
+            }
+            
         }
         // for (int i = 0; i < orders.size(); i++) {
         //     System.out.println(String.format("| %-11s| %-8s| %-14s| %-12s| %-11s| %-7s|",
@@ -142,7 +167,7 @@ public class PackageDatabase {
             String temp = p.getTrackingNumber();
 
             if (trackingNumber.equalsIgnoreCase(temp)) {
-                index = i;
+                index = packageOrderList.indexOf(p);
                 break;
             }
         }
@@ -298,7 +323,6 @@ public class PackageDatabase {
         // If an order was added, sort the list and display message
         System.out.println("Package Order has been added.\n");
         Collections.sort(packageOrderList);
-
     }
 
     /**
@@ -336,20 +360,32 @@ public class PackageDatabase {
         }
     }
 
-    /**
-     * This method opens <CODE>"PackageOrderDB.txt"</CODE> and overwrites it with a text representation of
-     * all the package orders in the <CODE>PackageOrderList</CODE>.
-     * This should be the last method to be called before exiting the program.
-     * @throws IOException
-     */
-    public void flush() throws IOException {
-        PrintWriter pw = new PrintWriter("PackageDB.txt");
+    public void flushSerial() throws IOException {
+        FileOutputStream fos = new FileOutputStream("PackageDB.ser");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
 
         for (PackageOrder c : packageOrderList) {
-            pw.print(c.toString());
+            oos.writeObject(c);
         }
 
-        pw.close();
+        fos.close();
     }
+
+    // /**
+    //  * This method opens <CODE>"PackageOrderDB.ser"</CODE> and overwrites it with a text representation of
+    //  * all the package orders in the <CODE>PackageOrderList</CODE>.
+    //  * This should be the last method to be called before exiting the program.
+    //  * @throws IOException
+    //  * @deprecated 
+    //  */
+    // public void flush() throws IOException {
+    //     PrintWriter pw = new PrintWriter("PackageDB.ser");
+
+    //     for (PackageOrder c : packageOrderList) {
+    //         pw.print(c.toString());
+    //     }
+
+    //     pw.close();
+    // }
 
 }

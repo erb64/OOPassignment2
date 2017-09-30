@@ -11,7 +11,7 @@ package shippingstore;
 public class User
 {
 
-    private final int idNumber;
+    private final Integer idNumber;
     private final String firstName;
     private final String lastName;
 
@@ -30,7 +30,7 @@ public class User
      * user
      *
      */
-    public User (int idNumber, String firstName, String lastName) {
+    public User (Integer idNumber, String firstName, String lastName) {
         this.idNumber = idNumber;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -41,7 +41,7 @@ public class User
      *
      * @return an <b><CODE>int</CODE></b> that is the ID number of the user.
      */
-    public String getIdNumber() {
+    public Integer getIdNumber() {
         return idNumber;
     }
 
@@ -92,6 +92,6 @@ public class User
      * @return the <CODE>boolean</CODE> value of the comparison.
      */
     public boolean equals(User c) {
-        return c.getidNumber().equals(this.idNumber);
+        return c.getIdNumber().equals(this.idNumber);
     }
 }

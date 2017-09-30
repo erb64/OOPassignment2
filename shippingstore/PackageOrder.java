@@ -1,5 +1,6 @@
 package shippingstore;
 
+import java.io.Serializable;
 /**
  * This class is a very simple representation of a package order. There are only getter
  * methods and no setter methods and as a result a package order cannot be mutated once
@@ -8,11 +9,12 @@ package shippingstore;
  *
  * @author Junye Wen, edited by Emily Beaudoin to fit this application
  */
-public class PackageOrder implements Comparable{
+public class PackageOrder implements Comparable, Serializable{
 
     private final String trackingnumber;
     private final String specification;
     private final String mailingclass;
+    private final String type;
 
     /**
      * This constructor initializes the package order object. The constructor provides no
@@ -28,10 +30,12 @@ public class PackageOrder implements Comparable{
      * Mailing class: First-Class, Priority, Retail, Ground, Metro.
      *
      */
-    public PackageOrder(String trackingnumber, String specification, String mailingclass) {
+    public PackageOrder(String trackingnumber, String specification, String mailingclass, String type) {
         this.trackingnumber = trackingnumber;
+        this.type = type;
         this.specification = specification;
         this.mailingclass = mailingclass;
+
     }
 
     /**
@@ -42,6 +46,17 @@ public class PackageOrder implements Comparable{
     public String getTrackingNumber() {
         return trackingnumber;
     }
+
+    
+     /**
+     * This method returns the package's type
+     *
+     * @return a <b><CODE>String</CODE></b> that describes the package
+     */
+     public String getType(){
+          return type;
+     }
+     
 
     /**
      * This method returns the package order's specification.
@@ -69,7 +84,7 @@ public class PackageOrder implements Comparable{
      */
     @Override
     public String toString() {
-        return trackingnumber + " " + specification + " " + mailingclass + "\n";
+        return trackingnumber + " " + type + " " + specification + " " + mailingclass;
     }
 
     /**
@@ -93,7 +108,8 @@ public class PackageOrder implements Comparable{
      * when this object is less than, equal to, or greater than (respectively) the 
      * specified object.
      */
-    public int compareTo(PackageOrder c) {
+    @Override
+    public int compareTo(Object c) {
         String trackingnum = ((PackageOrder)c).trackingnumber;
         return trackingnumber.compareTo(trackingnum);
     }

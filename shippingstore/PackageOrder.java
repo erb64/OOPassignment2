@@ -8,7 +8,7 @@ package shippingstore;
  *
  * @author Junye Wen, edited by Emily Beaudoin to fit this application
  */
-public class PackageOrder {
+public class PackageOrder implements Comparable{
 
     private final String trackingnumber;
     private final String specification;
@@ -82,6 +82,20 @@ public class PackageOrder {
      */
     public boolean equals(PackageOrder c) {
         return c.getTrackingNumber().equals(this.trackingnumber);
+    }
+
+    /**
+     * This method provides a compareTo in order to sort by tracking number 
+     *
+     * @param c a <b><CODE>PackageOrder</CODE></b> object that is used to compare to
+     * <b><CODE>this</CODE></b> package order. 
+     * @return the <CODE>int</CODE> value a negative integer, zero, or a positive integer 
+     * when this object is less than, equal to, or greater than (respectively) the 
+     * specified object.
+     */
+    public int compareTo(PackageOrder c) {
+        String trackingnum = ((PackageOrder)c).trackingnumber;
+        return trackingnumber.compareTo(trackingnum);
     }
 
 }

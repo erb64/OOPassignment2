@@ -6,42 +6,43 @@ import java.io.PrintWriter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Collections;
 
 /**
  * This class is used to represent a database interface for a list of
  * <CODE>Package Order</CODE>'s. It using a plain-text file "PackageOrderDB.txt"
  * to store and write package order objects in readable text form. It contains
- * an <CODE>ArrayList</CODE> called <CODE>packageOrerList</CODE> to store the
- * database in a runtime friendly data structure. The <CODE>packageOrerList</CODE>
+ * an <CODE>ArrayList</CODE> called <CODE>packageOrderList</CODE> to store the
+ * database in a runtime friendly data structure. The <CODE>packageOrderList</CODE>
  * is written to "PackageOrderDB.txt" at the end of the <CODE>PackageDatabase</CODE> object's
  * life by calling <CODE>flush()</CODE>. This class also provides methods for
  * adding, remove, and searching for shipping orders from the list.
  *
- * @author Junye Wen, edited by Emily Beaudoin
+ * @author Junye Wen, edited by Emily Beaudoin to fit this application
  */
 public class PackageDatabase {
 
-    private ArrayList<PackageOrder> packageOrerList;
+    private ArrayList<PackageOrder> packageOrderList;
 
     /**
-     * This constructor is hard-coded to open "<CODE>PackageOrderDB.txt</CODE>" and
-     * initialize the <CODE>packageOrerList</CODE> with its contents. If no such file
+     * This constructor is hard-coded to open "<CODE>PackageDB.txt</CODE>" and
+     * initialize the <CODE>packageOrderList</CODE> with its contents. If no such file
      * exists, then one is created. The contents of the file are "loaded" into
-     * the packageOrerList ArrayList in no particular order. The file is then closed
+     * the packageOrderList ArrayList in no particular order. The file is then closed
      * during the duration of the program until <CODE>flush()</CODE> is called.
      * @throws IOException
      */
     public PackageDatabase() throws IOException {
-        packageOrerList = new ArrayList<>();
+        packageOrderList = new ArrayList<>();
         Scanner orderScanner;
 
-        File dataFile = new File("PackageOrderDB.txt");
+        File dataFile = new File("PackageDB.txt");
 
         // If data file does not exist, create it.
         if (!dataFile.exists()) {
-            System.out.println("PackageOrderDB.txt does not exist, creating one now . . .");
+            System.out.println("PackageDB.txt does not exist, creating one now . . .");
             //if the file doesn't exists, create it
-            PrintWriter pw = new PrintWriter("PackageOrderDB.txt");
+            PrintWriter pw = new PrintWriter("PackageDB.txt");
             //close newly created file so we can reopen it
             pw.close();
         }
@@ -54,7 +55,7 @@ public class PackageDatabase {
             // split values using the space character as separator
             String[] temp = orderScanner.nextLine().split(" ");
 
-            packageOrerList.add(new PackageOrder(temp[0], temp[1], temp[2], temp[3],
+            packageOrderList.add(new PackageOrder(temp[0], temp[1], temp[2], temp[3],
                     Float.parseFloat(temp[4]), Integer.parseInt(temp[5])));
         }
 
@@ -63,12 +64,12 @@ public class PackageDatabase {
     }
 
     /**
-     * Method showPackageOrer displays the current list of package orders in the Arraylist in no
+     * Method showPackageOrders displays the current list of package orders in the Arraylist in no
      * particular order.
      *
      */
     public void showPackageOrders() {
-        showPackageOrders(packageOrerList);
+        showPackageOrders(packageOrderList);
     }
 
     /**
@@ -80,43 +81,50 @@ public class PackageDatabase {
     private void showPackageOrders(ArrayList<PackageOrder> orders) {
 
         System.out.println(" -------------------------------------------------------------------------- ");
-        System.out.println("| Tracking # | Type    | Specification | Class       | Weight(oz) | Volume |");
+        System.out.println("| Tracking # | Type    | Specification | Class      |           |          |");
         System.out.println(" -------------------------------------------------------------------------- ");
 
-        for (int i = 0; i < orders.size(); i++) {
-            System.out.println(String.format("| %-11s| %-8s| %-14s| %-12s| %-11s| %-7s|",
-                    orders.get(i).getTrackingNumber(),
-                    orders.get(i).getType(),
-                    orders.get(i).getSpecification(),
-                    orders.get(i).getMailingClass(),
-                    String.format("%.2f", orders.get(i).getWeight()),
-                    Integer.toString(orders.get(i).getVolume())
-                ));
+
+        for (PackageOrder p : orders){
+            System.out.printf("|%10s|%9s|%15s|%12s|%10.2f|%10d|\n", 
+                              p.getTrackingNumber(), p.getType(), 
+                              p.getSpecification(), p.getMailingClass(), 
+                              p.getWeight(), p.getVolume() );
         }
+        // for (int i = 0; i < orders.size(); i++) {
+        //     System.out.println(String.format("| %-11s| %-8s| %-14s| %-12s| %-11s| %-7s|",
+        //             orders.get(i).getTrackingNumber(),
+        //             orders.get(i).getType(),
+        //             orders.get(i).getSpecification(),
+        //             orders.get(i).getMailingClass(),
+        //             String.format("%.2f", orders.get(i).getWeight()),
+        //             Integer.toString(orders.get(i).getVolume())
+        //         ));
+        // }
         System.out.println(" --------------------------------------------------------------------------\n");
 
     }
 
-    /**
-     * This method displays package orders that have a weight within the range of
-     * <CODE>low</CODE> to <CODE>high</CODE>.
-     *
-     * @param low a float that is the lower bound weight.
-     * @param high a float that is the upper bound weight.
-     */
-    public void showPackageOrdersRange(float low, float high) {
-        ArrayList<PackageOrder> orders = new ArrayList<>();
-        for (PackageOrder order : packageOrerList) {
-            if ((low <= order.getWeight()) && (order.getWeight() <= high)) {
-                orders.add(order);
-            }
-        }
+    // /**
+    //  * This method displays package orders that have a weight within the range of
+    //  * <CODE>low</CODE> to <CODE>high</CODE>.
+    //  *
+    //  * @param low a float that is the lower bound weight.
+    //  * @param high a float that is the upper bound weight.
+    //  */
+    // public void showPackageOrdersRange(float low, float high) {
+    //     ArrayList<PackageOrder> orders = new ArrayList<>();
+    //     for (PackageOrder order : packageOrderList) {
+    //         if ((low <= order.getWeight()) && (order.getWeight() <= high)) {
+    //             orders.add(order);
+    //         }
+    //     }
         
-        if (orders.isEmpty())
-            System.out.println("No packages found with weight within the given range.\n");
-        else
-            showPackageOrders(orders);
-    }
+    //     if (orders.isEmpty())
+    //         System.out.println("No packages found with weight within the given range.\n");
+    //     else
+    //         showPackageOrders(orders);
+    // }
 
     /**
      * This method can be used to find a package order in the Arraylist of orders.
@@ -130,14 +138,13 @@ public class PackageDatabase {
 
         int index = -1;
 
-        for (int i = 0; i < packageOrerList.size(); i++) {
-            String temp = packageOrerList.get(i).getTrackingNumber();
+        for (PackageOrder p : packageOrderList) {
+            String temp = p.getTrackingNumber();
 
             if (trackingNumber.equalsIgnoreCase(temp)) {
                 index = i;
                 break;
             }
-
         }
 
         return index;
@@ -188,9 +195,9 @@ public class PackageDatabase {
      * <p>
      * 7. The Volume must be non-negative.
      * @param toAdd the <CODE>PackageOrder</CODE> object to add to the
-     * <CODE>packageOrerList</CODE>
+     * <CODE>packageOrderList</CODE>
      */
-    public void addOrder(String trackingnumber, String type, String specification, String mailingclass, String weight, String volume) {
+    public void addOrder(String trackingnumber, String type, String specification, String mailingclass, String special1, String special2) {
 
         if (this.findPackageOrder(trackingnumber) != -1) {
             System.out.println("Package Order already exists in database. \n");
@@ -200,15 +207,6 @@ public class PackageDatabase {
         if (!trackingnumber.matches("[A-Za-z0-9]{5}")) {
             System.out.println("Invalid Tracking Number: not proper format."
                 + "Tracking Number must be 5 alphanumeric characters.");
-            return;
-        }
-
-        if (!(type.equals("Postcard") || type.equals("Letter") || type.equals("Envelope")
-            || type.equals("Packet") || type.equals("Box")|| type.equals("Crate")
-            || type.equals("Drum")|| type.equals("Roll")|| type.equals("Tube"))) {
-            System.out.println("Invalid type:\n"
-                + "Type must be one of following: "
-                + "Postcard, Letter, Envelope, Packet, Box, Crate, Drum, Roll, Tube.");
             return;
         }
 
@@ -228,25 +226,83 @@ public class PackageDatabase {
             return;
         }
 
-        if (Float.parseFloat(weight) < 0) {
-            System.out.println("The weight of package cannot be negative.");
+        if (type.equals("Envelope"))
+        {
+            if(!special1.matches("[0-9]{1,2}")){
+                System.out.println("Invalid height:\n"
+                    + "The envelope's height (inches) has to be an integer number between 0 and 99.");
+                return;
+            }
+            if(!special2.matches("[0-9]{1,2}")){
+                System.out.println("Invalid width:\n"
+                    + "The envelope's width (inches) has to be an integer number between 0 and 99.");
+                return;
+            }
+
+            // If it passed all the checks, add the order to the list
+            packageOrderList.add(new Envelope(trackingnumber, specification, mailingclass,
+                    Integer.parseInt(special1), Integer.parseInt(special2)));
+        }
+        else if (type.equals("Box"))
+        {
+            if(!special1.matches("[0-9]{1,3}")){
+                System.out.println("Invalid dimension:\n"
+                    + "The box's largest dimension (inches) has to be an integer number between 0 and 999.");
+                return;
+            }
+            if(!special2.matches("[0-9]{1,6}")){
+                System.out.println("Invalid volume:\n"
+                    + "The box's volume (inches cubed) has to be an integer number between 0 and 999999.");
+                return;
+            }
+
+            // If it passed all the checks, add the order to the list
+            packageOrderList.add(new Box(trackingnumber, specification, mailingclass,
+                    Integer.parseInt(special1), Integer.parseInt(special2)));
+        }
+        else if (type.equals("Crate"))
+        {
+            if (!(Float.parseFloat(special1) < 0)) {
+                System.out.println("Invalid load weight:\n"
+                    + "The maximum load weight of the crate cannot be negative");
+                return;
+            }
+
+            // If it passed all the checks, add the order to the list
+            packageOrderList.add(new Crate(trackingnumber, specification, mailingclass,
+                    Float.parseFloat(special1), special2));
+        }
+        else if (type.equals("Drum"))
+        {
+            if (!(special1.equals("Plastic") || special1.equals("Fiber"))){
+                System.out.println("Invalid material:\n"
+                    + "Valid drum material options are: Plastic, Fiber");
+                return;
+            }
+            if(!special2.matches("[0-9]{1,3}")){
+                System.out.println("Invalid diameter:\n"
+                    + "The drums diameter (inches) has to be an integer number between 0 and 999.");
+                return;
+            }
+
+            // If it passed all the checks, add the order to the list
+            packageOrderList.add(new Drum(trackingnumber, specification, mailingclass,
+                    special1, Integer.parseInt(special2)));
+        }
+        else{
+            System.out.println("Not a valid type.\n"
+                + "Valid package types are: Envelope, Box, Crate, or Drum\n");
             return;
         }
 
-        if (!volume.matches("[0-9]{1,6}")) {
-            System.out.println("Invalid volume:\n"
-                + "The package's volume has to be an integer number between 0 and 999999. ");
-            return;
-        }
-
-        //If passed all the checks, add the order to the list
-        packageOrerList.add(new PackageOrder(trackingnumber, type, specification, mailingclass,
-                Float.parseFloat(weight), Integer.parseInt(volume)));
+        // If an order was added, sort the list and display message
         System.out.println("Package Order has been added.\n");
+        Collections.sort(packageOrderList);
+
     }
 
     /**
-     * This method will remove an order from the <CODE>packageOrerList</CODE> ArrayList. It
+     * This method will remove an order from the <CODE>packageOrderList</CODE> ArrayList. It
      * will remove the instance of an order that matches tracking number that was
      * passed to this method. If no such order exists, it will produce an error message.
      *
@@ -258,7 +314,7 @@ public class PackageDatabase {
             System.out.println("\nAction failed. No package order with the given tracking # exist in database.\n");
         }
         else {
-            packageOrerList.remove(orderID);
+            packageOrderList.remove(orderID);
             System.out.println("\nAction successful. Package order has been removed from the database.\n");
         }
     }
@@ -272,8 +328,8 @@ public class PackageDatabase {
      * invalid.
      */
     public PackageOrder getPackageOrder(int i) {
-        if (i < packageOrerList.size() && i >= 0) {
-            return packageOrerList.get(i);
+        if (i < packageOrderList.size() && i >= 0) {
+            return packageOrderList.get(i);
         } else {
             System.out.println("Invalid Index. Please enter another command or 'h' to list the commands.");
             return null;
@@ -287,9 +343,9 @@ public class PackageDatabase {
      * @throws IOException
      */
     public void flush() throws IOException {
-        PrintWriter pw = new PrintWriter("PackageOrderDB.txt");
+        PrintWriter pw = new PrintWriter("PackageDB.txt");
 
-        for (PackageOrder c : packageOrerList) {
+        for (PackageOrder c : packageOrderList) {
             pw.print(c.toString());
         }
 

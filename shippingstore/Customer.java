@@ -56,7 +56,7 @@ public class Customer extends User
      *
      * @return a <b><CODE>String</CODE></b> that is the customer's address
      */
-	public String getAddress()){
+	public String getAddress(){
 		return address;
 	}
 

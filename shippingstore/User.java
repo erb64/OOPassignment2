@@ -30,7 +30,7 @@ public class User
      * user
      *
      */
-    public PackageOrder(int idNumber, String firstName, String lastName) {
+    public User (int idNumber, String firstName, String lastName) {
         this.idNumber = idNumber;
         this.firstName = firstName;
         this.lastName = lastName;

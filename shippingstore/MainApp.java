@@ -141,10 +141,8 @@ public class MainApp {
 
             }//endof switch
 
-            System.out.println("Please enter another command or 'h' to list the commands.\n");
+            System.out.println("Please enter another command or 'help' to list the commands.\n");
             selection = in.nextLine();
-
-            in.nextLine();
         }//endof while
 
         in.close();

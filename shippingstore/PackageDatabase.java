@@ -1,15 +1,16 @@
 package shippingstore;
 
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import java.util.ArrayList;
-//import java.util.Scanner;
 import java.util.Collections;
 import java.io.Serializable;
+import java.lang.ClassNotFoundException;
+
 
 /**
  * This class is used to represent a database interface for a list of
@@ -38,40 +39,31 @@ public class PackageDatabase {
     public PackageDatabase() throws IOException {
         packageOrderList = new ArrayList<>();
 
-        FileInputStream fis = new FileInputStream("PackageDB.ser");
+        
+        try{
+            FileInputStream fis = new FileInputStream("PackageDB.ser");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            packageOrderList = (ArrayList<PackageOrder>) ois.readObject();
+            //Log.i("palval", "dir.exists()");
 
-        // If data file does not exist, create it.
-        if (!(fis.available() > 0)) {
+            fis.close(); 
+        }
+        catch(FileNotFoundException fnfe)
+        {
+            // If data file does not exist, create it.
             System.out.println("PackageDB.ser does not exist, creating one now . . .");
             //if the file doesn't exists, create it
             FileOutputStream fos = new FileOutputStream("PackageDB.ser");
             //close newly created file so we can reopen it
             fos.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        else{
-            ObjectInputStream ois = new ObjectInputStream(fis);
-
-            while(ois.available() > 0){
-                packageOrderList.add((PackageOrder) ois.readObject());
-
-            }
 
 
         
-            // //Initialize the Array List with package orders from PackageOrderDB.ser
-            // while (orderScanner.hasNextLine()) {
-        
-            //     // split values using the space character as separator
-            //     String[] temp = orderScanner.nextLine().split(" ");
-        
-            //     //add in some different stuff for the different types
-            //     packageOrderList.add(new PackageOrder(temp[0], temp[1], temp[2], temp[3],
-            //             Float.parseFloat(temp[4]), Integer.parseInt(temp[5])));
-            //     }
-        
-                //Package order list is now in the ArrayList completely so we can close the file
-                fis.close();
-        }
     }
 
     /**
@@ -89,7 +81,6 @@ public class PackageDatabase {
      *
      * @param orders the package order list to be displayed.
      */
-    @SuppressWarnings("unchecked")
     private void showPackageOrders(ArrayList<PackageOrder> orders) {
 
         System.out.println(" ------------------------------------------------------------------------------ ");
@@ -107,10 +98,10 @@ public class PackageDatabase {
                 System.out.printf("H: %7din|W: %8din|\n", ((Envelope)p).getHeight(), ((Envelope)p).getWidth());
             }
             else if (p instanceof Box){
-                System.out.printf("Dim: %7din|vol: %6in^3|\n", ((Box)p).getLargestDimension(), ((Box)p).getVolume());
+                System.out.printf("Dim: %3din|vol: %6din^3|\n", ((Box)p).getLargestDimension(), ((Box)p).getVolume());
             }
             else if (p instanceof Crate){
-                System.out.printf("Max wt: %5dlb|%13s|\n", ((Crate)p).getLoadWeight(), ((Crate)p).getContent());
+                System.out.printf("Max wt: %5.2flb|%13s|\n", ((Crate)p).getLoadWeight(), ((Crate)p).getContent());
             }
             else { //(p instanceof Drum)
                 System.out.printf("Mat:%7s|Dia: %7in|\n", ((Drum)p).getMaterial(), ((Drum)p).getDiameter());
@@ -123,26 +114,6 @@ public class PackageDatabase {
 
     }
 
-    // /**
-    //  * This method displays package orders that have a weight within the range of
-    //  * <CODE>low</CODE> to <CODE>high</CODE>.
-    //  *
-    //  * @param low a float that is the lower bound weight.
-    //  * @param high a float that is the upper bound weight.
-    //  */
-    // public void showPackageOrdersRange(float low, float high) {
-    //     ArrayList<PackageOrder> orders = new ArrayList<>();
-    //     for (PackageOrder order : packageOrderList) {
-    //         if ((low <= order.getWeight()) && (order.getWeight() <= high)) {
-    //             orders.add(order);
-    //         }
-    //     }
-        
-    //     if (orders.isEmpty())
-    //         System.out.println("No packages found with weight within the given range.\n");
-    //     else
-    //         showPackageOrders(orders);
-    // }
 
     /**
      * This method can be used to find a package order in the Arraylist of orders.
@@ -201,7 +172,7 @@ public class PackageDatabase {
      * is 5 digit alphanumeric characters.
      * <p>
      * 3. The Type of the order can be only one of the following:
-     *    Postcard, Letter, Envelope, Packet, Box, Crate, Drum, Roll, Tube.
+     *    Envelope, Box, Crate, Drum.
      * <p>
      * 4. The Specification of the order can be only one of the following:
      *    Fragile, Books, Catalogs, Do-not-Bend, N/A.
@@ -209,9 +180,17 @@ public class PackageDatabase {
      * 5. The Mailing Class of the order can be only one of the following:
      *    First-Class, Priority, Retail, Ground, Metro.
      * <p>
-     * 6. The Weight must be non-negative.
+     * 6. Special cases have varying requirements depending on type of package.
+     *    Envelope: Height in inches 0-99
+     *    Box: Largest dimension in inches 0-999
+     *    Crate: Maximum Load Weight in lbs must be greater than 0.00
+     *    Drum: Material must be Plastic or Fiber
      * <p>
-     * 7. The Volume must be non-negative.
+     * 7. Special cases have varying requirements depending on type of package.
+     *    Envelope: Width in inches 0-99
+     *    Box: Volume in inches cubed 0-999999
+     *    Crate: Content of the crate 
+     *    Drum: diameter in inches 0-999
      * @param toAdd the <CODE>PackageOrder</CODE> object to add to the
      * <CODE>packageOrderList</CODE>
      */
@@ -353,32 +332,19 @@ public class PackageDatabase {
         }
     }
 
+    /**
+     * This method opens <CODE>"PackageOrderDB.ser"</CODE> and overwrites it with a serialization of
+     * all the package orders in the <CODE>PackageOrderList</CODE>.
+     * This should be the last method to be called before exiting the program.
+     * @throws IOException
+     */
     public void flushSerial() throws IOException {
         FileOutputStream fos = new FileOutputStream("PackageDB.ser");
         ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-        for (PackageOrder c : packageOrderList) {
-            oos.writeObject(c);
-        }
+        oos.writeObject(packageOrderList);
 
         fos.close();
     }
-
-    // /**
-    //  * This method opens <CODE>"PackageOrderDB.ser"</CODE> and overwrites it with a text representation of
-    //  * all the package orders in the <CODE>PackageOrderList</CODE>.
-    //  * This should be the last method to be called before exiting the program.
-    //  * @throws IOException
-    //  * @deprecated 
-    //  */
-    // public void flush() throws IOException {
-    //     PrintWriter pw = new PrintWriter("PackageDB.ser");
-
-    //     for (PackageOrder c : packageOrderList) {
-    //         pw.print(c.toString());
-    //     }
-
-    //     pw.close();
-    // }
 
 }

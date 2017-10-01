@@ -5,12 +5,12 @@ import java.io.Serializable;
  * This class is a very simple representation of a package order. There are only getter
  * methods and no setter methods and as a result a package order cannot be mutated once
  * initialized. A package order object can also call the two override methods
- * <CODE>toString()</CODE> and <CODE>equals()</CODE>
+ * <CODE>toString()</CODE> and <CODE>equals()</CODE> and <CODE>compareTo()</CODE>
  *
  * @author Junye Wen, edited by Emily Beaudoin to fit this application
  */
-public class PackageOrder implements Comparable, Serializable{
-
+public class PackageOrder implements Comparable, Serializable
+{
     private final String trackingnumber;
     private final String specification;
     private final String mailingclass;

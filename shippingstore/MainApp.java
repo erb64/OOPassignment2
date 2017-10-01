@@ -146,8 +146,8 @@ public class MainApp {
         }//endof while
 
         in.close();
-        //packages.flush();
-        packages.flushSerial();
+        packages.flush();
+        users.flush();
 
         System.out.println("Done!");
 

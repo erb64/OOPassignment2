@@ -24,9 +24,41 @@ import java.lang.ClassNotFoundException;
  *
  * @author Junye Wen, edited by Emily Beaudoin to fit this application
  */
-public class PackageDatabase {
-
+public class PackageDatabase 
+{
     private ArrayList<PackageOrder> packageOrderList;
+
+     /**
+     * Private method used as an auxiliary method to display a given ArrayList
+     * of package orders in a formatted manner.
+     *
+     * @param orders the package order list to be displayed.
+     */
+    private void showPackageOrders(ArrayList<PackageOrder> orders) {
+
+        System.out.println(" ------------------------------------------------------------------------------ ");
+        System.out.println("| Tracking # | Type    | Specification | Class      |             |            |");
+        System.out.println(" ------------------------------------------------------------------------------ ");
+
+
+        for (PackageOrder p : orders){
+            System.out.printf("|%10s|%9s|%15s|%12s|", 
+                              p.getTrackingNumber(), p.getType(), 
+                              p.getSpecification(), p.getMailingClass());
+
+            if(p instanceof Envelope){
+                System.out.printf(" Height: %3din | Width: %3din |\n", ((Envelope)p).getHeight(), ((Envelope)p).getWidth());
+            } else if (p instanceof Box){
+                System.out.printf("Dim: %3din|vol: %6din^3|\n", ((Box)p).getLargestDimension(), ((Box)p).getVolume());
+            } else if (p instanceof Crate){
+                System.out.printf("Max wt: %5.2flb|%13s|\n", ((Crate)p).getLoadWeight(), ((Crate)p).getContent());
+            } else { //(p instanceof Drum)
+                System.out.printf("Mat:%7s|Dia: %7in|\n", ((Drum)p).getMaterial(), ((Drum)p).getDiameter());
+            }   
+        }
+
+        System.out.println(" ------------------------------------------------------------------------------\n");
+    }
 
     /**
      * This constructor is hard-coded to open "<CODE>PackageDB.ser</CODE>" and
@@ -61,8 +93,6 @@ public class PackageDatabase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
         
     }
 
@@ -74,46 +104,6 @@ public class PackageDatabase {
     public void showPackageOrders() {
         showPackageOrders(packageOrderList);
     }
-
-    /**
-     * Private method used as an auxiliary method to display a given ArrayList
-     * of package orders in a formatted manner.
-     *
-     * @param orders the package order list to be displayed.
-     */
-    private void showPackageOrders(ArrayList<PackageOrder> orders) {
-
-        System.out.println(" ------------------------------------------------------------------------------ ");
-        System.out.println("| Tracking # | Type    | Specification | Class      |             |            |");
-        System.out.println(" ------------------------------------------------------------------------------ ");
-
-
-        for (PackageOrder p : orders){
-
-            System.out.printf("|%10s|%9s|%15s|%12s|", 
-                              p.getTrackingNumber(), p.getType(), 
-                              p.getSpecification(), p.getMailingClass());
-
-            if(p instanceof Envelope){
-                System.out.printf("H: %7din|W: %8din|\n", ((Envelope)p).getHeight(), ((Envelope)p).getWidth());
-            }
-            else if (p instanceof Box){
-                System.out.printf("Dim: %3din|vol: %6din^3|\n", ((Box)p).getLargestDimension(), ((Box)p).getVolume());
-            }
-            else if (p instanceof Crate){
-                System.out.printf("Max wt: %5.2flb|%13s|\n", ((Crate)p).getLoadWeight(), ((Crate)p).getContent());
-            }
-            else { //(p instanceof Drum)
-                System.out.printf("Mat:%7s|Dia: %7in|\n", ((Drum)p).getMaterial(), ((Drum)p).getDiameter());
-            }
-
-            
-        }
-
-        System.out.println(" --------------------------------------------------------------------------\n");
-
-    }
-
 
     /**
      * This method can be used to find a package order in the Arraylist of orders.
@@ -302,7 +292,7 @@ public class PackageDatabase {
      * will remove the instance of an order that matches tracking number that was
      * passed to this method. If no such order exists, it will produce an error message.
      *
-     * @param toDelete the <CODE>PackageOrder</CODE> object to be removed.
+     * @param trackingNum the <CODE>PackageOrder</CODE> object to be removed.
      */
     public void removeOrder(String trackingNum) {
         int orderID = findPackageOrder(trackingNum);
@@ -338,7 +328,7 @@ public class PackageDatabase {
      * This should be the last method to be called before exiting the program.
      * @throws IOException
      */
-    public void flushSerial() throws IOException {
+    public void flush() throws IOException {
         FileOutputStream fos = new FileOutputStream("PackageDB.ser");
         ObjectOutputStream oos = new ObjectOutputStream(fos);
 

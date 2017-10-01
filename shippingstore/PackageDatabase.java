@@ -118,16 +118,7 @@ public class PackageDatabase {
 
             
         }
-        // for (int i = 0; i < orders.size(); i++) {
-        //     System.out.println(String.format("| %-11s| %-8s| %-14s| %-12s| %-11s| %-7s|",
-        //             orders.get(i).getTrackingNumber(),
-        //             orders.get(i).getType(),
-        //             orders.get(i).getSpecification(),
-        //             orders.get(i).getMailingClass(),
-        //             String.format("%.2f", orders.get(i).getWeight()),
-        //             Integer.toString(orders.get(i).getVolume())
-        //         ));
-        // }
+
         System.out.println(" --------------------------------------------------------------------------\n");
 
     }

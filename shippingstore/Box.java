@@ -1,4 +1,4 @@
- package shippingstore;
+package shippingstore;
 
 /**
  * This class is a specialized representation of a package order, specific to boxes. 

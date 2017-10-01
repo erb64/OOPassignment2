@@ -89,31 +89,33 @@ public class PackageDatabase {
      *
      * @param orders the package order list to be displayed.
      */
+    @SuppressWarnings("unchecked")
     private void showPackageOrders(ArrayList<PackageOrder> orders) {
 
-        System.out.println(" -------------------------------------------------------------------------- ");
-        System.out.println("| Tracking # | Type    | Specification | Class      |           |          |");
-        System.out.println(" -------------------------------------------------------------------------- ");
+        System.out.println(" ------------------------------------------------------------------------------ ");
+        System.out.println("| Tracking # | Type    | Specification | Class      |             |            |");
+        System.out.println(" ------------------------------------------------------------------------------ ");
 
 
         for (PackageOrder p : orders){
 
-            System.out.printf("|%10s|%9s|%15s|%12s|%10.2f|%10d|\n", 
+            System.out.printf("|%10s|%9s|%15s|%12s|", 
                               p.getTrackingNumber(), p.getType(), 
                               p.getSpecification(), p.getMailingClass());
 
-            if(p.getType().equals("Envelope")){
-
+            if(p instanceof Envelope){
+                System.out.printf("H: %7din|W: %8din|\n", ((Envelope)p).getHeight(), ((Envelope)p).getWidth());
             }
-            else if (p.getType().equals("Box")){
-
+            else if (p instanceof Box){
+                System.out.printf("Dim: %7din|vol: %6in^3|\n", ((Box)p).getLargestDimension(), ((Box)p).getVolume());
             }
-            else if (p.getType().equals("Crate")){
-
+            else if (p instanceof Crate){
+                System.out.printf("Max wt: %5dlb|%13s|\n", ((Crate)p).getLoadWeight(), ((Crate)p).getContent());
             }
-            else { //type is drum
-
+            else { //(p instanceof Drum)
+                System.out.printf("Mat:%7s|Dia: %7in|\n", ((Drum)p).getMaterial(), ((Drum)p).getDiameter());
             }
+
             
         }
         // for (int i = 0; i < orders.size(); i++) {

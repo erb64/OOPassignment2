@@ -294,7 +294,8 @@ public class PackageDatabase
      *
      * @param trackingNum the <CODE>PackageOrder</CODE> object to be removed.
      */
-    public void removeOrder(String trackingNum) {
+    public void removeOrder(String trackingNum) 
+    {
         int orderID = findPackageOrder(trackingNum);
         if (orderID == -1) {
             System.out.println("\nAction failed. No package order with the given tracking # exist in database.\n");
@@ -313,7 +314,8 @@ public class PackageDatabase
      * @return the <CODE>PackageOrder</CODE> object at the index or null if the index is
      * invalid.
      */
-    public PackageOrder getPackageOrder(int i) {
+    public PackageOrder getPackageOrder(int i) 
+    {
         if (i < packageOrderList.size() && i >= 0) {
             return packageOrderList.get(i);
         } else {
@@ -328,7 +330,8 @@ public class PackageDatabase
      * This should be the last method to be called before exiting the program.
      * @throws IOException
      */
-    public void flush() throws IOException {
+    public void flush() throws IOException 
+    {
         FileOutputStream fos = new FileOutputStream("PackageDB.ser");
         ObjectOutputStream oos = new ObjectOutputStream(fos);
 

@@ -80,7 +80,7 @@ public class User implements Comparable, Serializable
      *
      * @param lastName a <b><CODE>String</CODE></b> that is the user's last name.
      */
-    public void setlastName(String lastName) 
+    public void setLastName(String lastName) 
     {
         this.lastName = lastName;
     }

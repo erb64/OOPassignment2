@@ -44,6 +44,8 @@ public class MainApp {
 
         String selection = in.nextLine();
 
+
+        String type, inTemp;
         while (!selection.equals("10")) {
 
             switch (selection) {
@@ -52,8 +54,8 @@ public class MainApp {
                     break;
                 case "2":
                     System.out.println("Please enter the type of package you wish to add: (Envelope, Box, Crate, or Drum)");
-                    String type = in.nextLine();
-                    String inTemp, temp[];
+                    type = in.nextLine();
+                    String temp[];
                     switch(type){
                         case "Envelope":
                             System.out.print(packageMessage + "HEIGHT WIDTH\n"
@@ -121,12 +123,63 @@ public class MainApp {
                     packages.searchPackageOrder(trackingNum);
                     break;
                 case "5":
-                    //show users
+                    users.showUsers();
                     break;
                 case "6":
-                    //add user
+                    System.out.println("Please enter the type of user you wish to add: (Employee or Customer)");
+                    type = in.nextLine();
+                    String utemp[];
+                    switch(type){
+                        case "Employee":
+                            System.out.print("Please type description of the Employee with the following pattern:\n"
+                                + "\nID# FIRST-NAME LAST-NAME SS# MONTHLY-SALARY BANK-ACCOUNT\n"
+                                + "example:\n019245 Rick Sanchez 000114444 3456.23 1234567890\n");
+                            inTemp = in.nextLine();
+                            utemp = inTemp.split(" ");
+
+                            if (utemp.length != 6) {
+                                System.out.println("Not correct number of fields to process.");
+                                break;
+                            }
+                            users.addUser(type, utemp[0], utemp[1], utemp[2], utemp[3], utemp[4], utemp[5]);
+                            break;
+                        case "Customer":
+                            System.out.print("Please type description of the Customer with the following pattern:\n"
+                                + "\nID# FIRST-NAME LAST-NAME PHONE-NUMBER ADDRESS\n"
+                                + "example:\n019245 Jesse Lacey 555-867-5309 601 University Drive, San Marcos, TX, 78666\n");
+                            inTemp = in.nextLine();
+                            utemp = inTemp.split(" ");
+
+                            if (utemp.length < 6) {
+                                System.out.println("Not correct number of fields to process.");
+                                break;
+                            }
+
+                            String address = new String();
+                            for (int i = 4; i < utemp.length; i++)
+                                address += (utemp[i] + " ");
+
+                            users.addUser(type, utemp[0], utemp[1], utemp[2], utemp[3], address, "");
+                            break;
+                        default:
+                            System.out.println("That is not a valid type. Returning to main menu.");
+                    }
+                    break;
                 case "7":
-                    //update user
+                    System.out.println("\nPlease enter the ID # of the user to update:\n");
+                    String id = in.nextLine();
+                    if (users.findUser(id) != -1) {
+                        type = users.getUserType(users.findUser(id));
+                        System.out.println("\nEnter the field you wish to update: \n" 
+                            + "(First-name, Last-name, Social, Salary, Account, Phone, or Address)\n");
+                        String field = in.nextLine();
+                        System.out.println("\nEnter the updated information: \n");
+                        String update = in.nextLine();
+                        users.updateUserInfo(users.findUser(id), type, field, update);
+                    } else {
+                        System.out.println("\nNo user found with that ID.\n");
+                    }
+                    break;
                 case "8":
                     //complete a transation
                 case "9":

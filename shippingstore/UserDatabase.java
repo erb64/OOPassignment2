@@ -39,13 +39,13 @@ public class UserDatabase
 
 
         for (User u : users){
-            System.out.printf("|%6d|%20s|", u.getIdNumber(), u.getFullName());
+            System.out.printf("|%6d| %-19s|", u.getIdNumber(), u.getFullName());
 
             if(u instanceof Customer){
                 System.out.printf(" Phone number: %s\n", ((Customer)u).getPhone());
                 System.out.printf("|%27s| Address: %s\n", " ", ((Customer)u).getAddress());
             } else { //(u instance of Employee)
-                System.out.printf(" Social Security Number: %d\n", ((Employee)u).getSocial());
+                System.out.printf(" Social Security Number: %09d\n", ((Employee)u).getSocial());
                 System.out.printf("|%27s| Monthly Salary: %.02f\n", " ", ((Employee)u).getSalary());
                 System.out.printf("|%27s| Bank Account Number: %d\n", " ", ((Employee)u).getAccount());
             }   
@@ -113,7 +113,7 @@ public class UserDatabase
             for (User u : userList) {
                 Integer temp = u.getIdNumber();
 
-                if (idNumber.equals(temp)) {
+                if (temp.equals(Integer.parseInt(idNumber))) {
                     index = userList.indexOf(u);
                     break;
                 }
@@ -145,7 +145,7 @@ public class UserDatabase
      * @param special2
      * @param special3 last field ignored for customer typed users
      */
-    public void addOrder(String type, String idNumber, String firstName, String lastName,
+    public void addUser(String type, String idNumber, String firstName, String lastName,
                          String special1, String special2, String special3) 
     {
 
@@ -167,13 +167,13 @@ public class UserDatabase
                 return;
             }
 
-            if (!(Float.parseFloat(special2) < 0)) {
+            if (Float.parseFloat(special2) < 0) {
                 System.out.println("Invalid salary:\n"
                     + "Monthly salary cannot be negative\n");
                 return;
             }
 
-            if (!special3.matches("[0-9]{8-15}")) {
+            if (!special3.matches("[0-9]{8,15}")) {
                 System.out.println("Invalid bank account number:\n"
                     + "Bank account number must be between 8 and 15 digits.");
                 return;
@@ -201,7 +201,7 @@ public class UserDatabase
      *
      * @param idNum the <CODE>String</CODE> ID number of the user to be removed.
      */
-    public void removeOrder(String idNum) 
+    public void removeUser(String idNum) 
     {
         int userIndex = findUser(idNum);
         if (userIndex == -1) {
@@ -215,9 +215,9 @@ public class UserDatabase
 
     /**
      * This method is used to retrieve the User object from the
-     * <CODE>UserList</CODE> at a given index.
+     * <CODE>userList</CODE> at a given index.
      *
-     * @param i the index of the desired <CODE>PackageOrder</CODE> object.
+     * @param i the index of the desired <CODE>User</CODE> object.
      * @return the <CODE>PackageOrder</CODE> object at the index or null if the index is
      * invalid.
      */
@@ -229,6 +229,80 @@ public class UserDatabase
             System.out.println("Invalid Index. Please enter another command or 'h' to list the commands.");
             return null;
         }
+    }
+
+    /**
+    * This method returns the type of user in the <CODE>userList</CODE> at the given
+    * index
+    * 
+    * @param i the index of the desired <CODE>User</CODE>
+    * @return the <CODE>String</CODE> description of the type of user
+    */
+    public String getUserType(int i)
+    {
+        User u = userList.get(i);
+        if ( u instanceof Employee ) {
+            return "Employee";
+        }
+        else {//(u instanceof Customer) 
+            return "Customer";
+        }
+    }
+
+    /**
+    * This method is used to change a user's info after they have already been added to the
+    * <CODE>userList</CODE>
+    *
+    * @param index an <b><CODE>int</CODE></b> that represents the index of the user in the
+    * array list
+    *
+    * @param type a <b><CODE>String</CODE></b> that represents the type of user to be updated
+    *
+    * @param field a <b><CODE>String</CODE></b> that represents the type of information 
+    * being updated
+    * 
+    * @param update a <b><CODE>String</CODE></b> that represents the updated information
+    */
+    public void updateUserInfo (int index, String type, String field, String update)
+    {
+        if (field.equalsIgnoreCase("First-name")) 
+            (userList.get(index)).setFirstName(update);
+        else if (field.equalsIgnoreCase("Last-name"))
+            (userList.get(index)).setLastName(update);
+        else if (type.equals("Employee")){
+            if (field.equalsIgnoreCase("Social")) {
+                if (!update.matches("[0-9]{9}"))
+                    System.out.println("\nError: Social Security number must be 9 digits long.\n");
+                else 
+                    ((Employee)userList.get(index)).setSocial(Integer.parseInt(update));
+
+            } else if (field.equalsIgnoreCase("Salary")) {
+                if (!(Float.parseFloat(update) > 0))
+                    System.out.println("\nError: Salary must be greater than 0.\n");
+                else 
+                    ((Employee)userList.get(index)).setSalary(Float.parseFloat(update));
+            } else if (field.equalsIgnoreCase("Account")) {
+                if (!update.matches("[0-9]{8,15}"))
+                    System.out.println("\nError: Account number must be between 8 and 15 digits\n");
+                else
+                    ((Employee)userList.get(index)).setAccount(Integer.parseInt(update));
+            } else {
+                System.out.println("\nError: this user doesnt have that field to update\n");
+                return;
+            }
+        } else { //type.equals("Customer")
+            if (field.equalsIgnoreCase("Phone")) 
+                ((Customer)userList.get(index)).setPhone(update);
+            else if (field.equalsIgnoreCase("Address")) 
+                ((Customer)userList.get(index)).setAddress(update);
+            else{
+                System.out.println("\nError: this user doesn't have that field to update\n");
+                return;
+            }
+        }
+
+        System.out.println("\nUpdate succssful.\n");
+
     }
 
     /**

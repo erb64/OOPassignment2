@@ -65,7 +65,7 @@ public class MainApp {
                                 System.out.println("Not correct number of fields to process.");
                                 break;
                             }
-                            packageDatabase.addOrder(temp[0], type, temp[1], temp[2], temp[3], temp[4]);
+                            packages.addOrder(temp[0], type, temp[1], temp[2], temp[3], temp[4]);
                             break;
                         case "Box":
                             System.out.print(packageMessage + "LARGEST-DIMENSION VOLUME\n"
@@ -77,7 +77,7 @@ public class MainApp {
                                 System.out.println("Not correct number of fields to process.");
                                 break;
                             }
-                            packageDatabase.addOrder(temp[0], type, temp[1], temp[2], temp[3], temp[4]);
+                            packages.addOrder(temp[0], type, temp[1], temp[2], temp[3], temp[4]);
                             break;
                         case "Crate":
                             System.out.print(packageMessage + "MAX-LOAD-WEIGHT CONTENT\n"
@@ -89,7 +89,7 @@ public class MainApp {
                                 System.out.println("Not correct number of fields to process.");
                                 break;
                             }
-                            packageDatabase.addOrder(temp[0], type, temp[1], temp[2], temp[3], temp[4]);
+                            packages.addOrder(temp[0], type, temp[1], temp[2], temp[3], temp[4]);
                             break;
                         case "Drum":
                             System.out.print(packageMessage + "MATERIAL DIAMETER\n"
@@ -101,7 +101,7 @@ public class MainApp {
                                 System.out.println("Not correct number of fields to process.");
                                 break;
                             }
-                            packageDatabase.addOrder(temp[0], type, temp[1], temp[2], temp[3], temp[4]);
+                            packages.addOrder(temp[0], type, temp[1], temp[2], temp[3], temp[4]);
                             break;
                         default:
                             System.out.println("That is not a valid type. Returning to main menu.");
@@ -116,9 +116,9 @@ public class MainApp {
                     break;
                 case "4":
                     System.out.println("\nEnter the Tracking # of the order you wish to see.\n");
-                    String trackingNum = in.nextline();
+                    String trackingNum = in.nextLine();
 
-                    shippingstore.searchPackageOrder(trackingNum);
+                    packages.searchPackageOrder(trackingNum);
                     break;
                 case "5":
                     //show users
@@ -141,15 +141,14 @@ public class MainApp {
 
             }//endof switch
 
-            System.out.println("Please enter another command or 'h' to list the commands.\n");
+            System.out.println("Please enter another command or 'help' to list the commands.\n");
             selection = in.nextLine();
-
-            in.nextLine();
         }//endof while
 
         in.close();
-        shippingstore.flush();
-        
+        //packages.flush();
+        packages.flushSerial();
+
         System.out.println("Done!");
 
     }

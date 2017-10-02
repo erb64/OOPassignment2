@@ -25,6 +25,7 @@ public class MainApp {
 
         PackageDatabase packages = new PackageDatabase();
         UserDatabase users = new UserDatabase();
+        TransactionDatabase transactions = new TransactionDatabase();
 
         String welcomeMessage = "\nWelcome to the Shipping Store. Choose one of the following functions:\n\n"
                 + "\t1. Show all existing package records in the database\n"
@@ -181,7 +182,35 @@ public class MainApp {
                     }
                     break;
                 case "8":
-                    //complete a transation
+                    System.out.print("\nPlease type the transaction description in the following pattern:\n"
+                        + "\nCUSTOMERID PACKAGE-TRACKING# SHIP-DATE DELIVER-DATE COST EMPLOYEEID\n"
+                        + "example:\n 123456 ABE43 12/31/99 01/31/00 25.43 987654\n");
+                    inTemp = in.nextLine();
+                    String atemp[] = inTemp.split(" ");
+
+                    if (atemp.length != 6) {
+                        System.out.println("Not correct number of fields to process.");
+                        break;
+                    }
+
+                    if(users.findUser(atemp[0]) == -1) {
+                        System.out.println("\nNo customer found with that ID");
+                        break;
+                    } 
+                    if(users.findUser(atemp[5]) == -1) {
+                        System.out.println("\nNo employee found with that ID");
+                        break;
+                    }
+                    if(packages.findPackageOrder(atemp[1]) == -1) {
+                        System.out.println("\nNo package found with that tracking number");
+                        break;
+                    }
+
+                    User c = users.getUser(users.findUser(atemp[0]));
+                    PackageOrder p = packages.getPackageOrder(packages.findPackageOrder(atemp[1]));
+                    User e = users. getUser(users.findUser(atemp[5]));
+
+                    transactions.addTransaction(c, e, p, atemp[2], atemp[3], atemp[4]);
                 case "9":
                     //show completed transactions
                 case "10":
@@ -201,6 +230,7 @@ public class MainApp {
         in.close();
         packages.flush();
         users.flush();
+        transactions.flush();
 
         System.out.println("Done!");
 

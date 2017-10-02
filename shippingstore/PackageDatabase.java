@@ -15,7 +15,7 @@ import java.lang.ClassNotFoundException;
 /**
  * This class is used to represent a database interface for a list of
  * <CODE>Package Order</CODE>'s. It using a plain-text file "PackageDB.ser"
- * to store and write package order objects in readable text form. It contains
+ * to store and write package order objects in serialized form. It contains
  * an <CODE>ArrayList</CODE> called <CODE>packageOrderList</CODE> to store the
  * database in a runtime friendly data structure. The <CODE>packageOrderList</CODE>
  * is written to "PackageDB.ser" at the end of the <CODE>PackageDatabase</CODE> object's
@@ -37,23 +37,27 @@ public class PackageDatabase
     private void showPackageOrders(ArrayList<PackageOrder> orders) {
 
         System.out.println(" ------------------------------------------------------------------------------ ");
-        System.out.println("| Tracking # | Type    | Specification | Class      |             |            |");
+        System.out.println("|Tracking#|   Type   |Specification|   Class     |                             |");
         System.out.println(" ------------------------------------------------------------------------------ ");
 
 
         for (PackageOrder p : orders){
-            System.out.printf("|%10s|%9s|%15s|%12s|", 
+            System.out.printf("| %-8s| %-9s| %-12s| %-12s|", 
                               p.getTrackingNumber(), p.getType(), 
                               p.getSpecification(), p.getMailingClass());
 
             if(p instanceof Envelope){
-                System.out.printf(" Height: %3din | Width: %3din |\n", ((Envelope)p).getHeight(), ((Envelope)p).getWidth());
+                System.out.printf(" Height: %17din |  \n|%48s| Width: %18din |\n", ((Envelope)p).getHeight(), 
+                    " ", ((Envelope)p).getWidth());
             } else if (p instanceof Box){
-                System.out.printf("Dim: %3din|vol: %6din^3|\n", ((Box)p).getLargestDimension(), ((Box)p).getVolume());
+                System.out.printf(" Largest Dimension: %6din |\n|%48s| Volume: %15din^3 |\n", 
+                    ((Box)p).getLargestDimension(), " ", ((Box)p).getVolume());
             } else if (p instanceof Crate){
-                System.out.printf("Max wt: %5.2flb|%13s|\n", ((Crate)p).getLoadWeight(), ((Crate)p).getContent());
+                System.out.printf(" Max Load Weight: %8.2flb |\n|%48s| Contents: %17s |\n", ((Crate)p).getLoadWeight(),
+                " ", ((Crate)p).getContent());
             } else { //(p instanceof Drum)
-                System.out.printf("Mat:%7s|Dia: %7in|\n", ((Drum)p).getMaterial(), ((Drum)p).getDiameter());
+                System.out.printf(" Material: %17s |\n|%48s| Diameter: %15din |\n", ((Drum)p).getMaterial(),
+                " ", ((Drum)p).getDiameter());
             }   
         }
 
@@ -249,7 +253,7 @@ public class PackageDatabase
         }
         else if (type.equals("Crate"))
         {
-            if (!(Float.parseFloat(special1) < 0)) {
+            if ((Float.parseFloat(special1) < 0)) {
                 System.out.println("Invalid load weight:\n"
                     + "The maximum load weight of the crate cannot be negative");
                 return;

@@ -60,7 +60,7 @@ public class UserDatabase
      * exists, then one is created. The contents of the file are "loaded" into
      * the packageOrderList ArrayList in no particular order. The file is then closed
      * during the duration of the program until <CODE>flush()</CODE> is called.
-     * @throws IOException
+     * @throws IOException if the FileInputStream cannot find a file - handled
      */
     public UserDatabase() throws IOException 
     {
@@ -137,13 +137,23 @@ public class UserDatabase
      * <p>
      * 4. For Employees: Social security 
      *
-     * @param type the <CODE>PackageOrder</CODE> object to add to the
-     * @param idNumber
-     * @param firstName
-     * @param lastName
-     * @param special1
-     * @param special2
-     * @param special3 last field ignored for customer typed users
+     * @param type the <CODE>String</CODE> which represents the type of user to be 
+     * added
+     *
+     * @param idNumber the <CODE>String</CODE> which represents the user's ID number
+     * 
+     * @param firstName the <CODE>String</CODE> that is the user's first name
+     *
+     * @param lastName the <CODE>String</CODE> that is the user's last name
+     *
+     * @param special1 the <CODE>String</CODE> that is either the employee's social
+     * or the Customer's phone number
+     *
+     * @param special2 the <CODE>String</CODE> that is either the employee's monthly 
+     * salary OR the customer's address
+     *
+     * @param special3 the <CODE>String</CODE> that is either the employee's account
+     * number for direct deposit OR ignored for customer typed users
      */
     public void addUser(String type, String idNumber, String firstName, String lastName,
                          String special1, String special2, String special3) 

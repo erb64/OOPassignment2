@@ -66,7 +66,8 @@ public class PackageDatabase
      * exists, then one is created. The contents of the file are "loaded" into
      * the packageOrderList ArrayList in no particular order. The file is then closed
      * during the duration of the program until <CODE>flush()</CODE> is called.
-     * @throws IOException
+     * @throws IOException if "<CODE>PackageDB.ser</CODE>" does not exist (and creates
+     * the file)
      */
     public PackageDatabase() throws IOException {
         packageOrderList = new ArrayList<>();
@@ -184,7 +185,8 @@ public class PackageDatabase
      * @param toAdd the <CODE>PackageOrder</CODE> object to add to the
      * <CODE>packageOrderList</CODE>
      */
-    public void addOrder(String trackingnumber, String type, String specification, String mailingclass, String special1, String special2) {
+    public void addOrder(String trackingnumber, String type, String specification, 
+        String mailingclass, String special1, String special2) {
 
         if (this.findPackageOrder(trackingnumber) != -1) {
             System.out.println("Package Order already exists in database. \n");

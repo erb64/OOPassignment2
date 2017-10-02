@@ -1,6 +1,7 @@
 package shippingstore;
 
 import java.io.Serializable;
+
 /**
  * This class is a very simple representation of a package order. There are only getter
  * methods and no setter methods and as a result a package order cannot be mutated once
@@ -30,7 +31,7 @@ public class PackageOrder implements Comparable, Serializable
      * Mailing class: First-Class, Priority, Retail, Ground, Metro.
      *
      */
-    public PackageOrder(String trackingnumber, String specification, String mailingclass, String type) {
+    public PackageOrder(String trackingnumber, String type, String specification, String mailingclass) {
         this.trackingnumber = trackingnumber;
         this.type = type;
         this.specification = specification;

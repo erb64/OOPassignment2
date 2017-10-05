@@ -40,6 +40,9 @@ public class MainApp {
         String packageMessage = "\nPlease type description of package with the following pattern:\n"
                             + "\n TRACKING# SPECIFICATION CLASS ";
 
+        String showOptions = "\nSpecifications: Fragile, Books, Catalogs, Do-not-Bend, N/A.\n"
+                            + "Mailing Classes: First-Class, Priority, Retail, Ground, Metro. \n";
+
         System.out.println(welcomeMessage);
 
         String selection = in.nextLine();

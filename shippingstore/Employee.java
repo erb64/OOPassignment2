@@ -5,7 +5,6 @@ package shippingstore;
  * An employee object can also call the override method via inheritance from User
  * and <CODE>equals()</CODE> and can call the override method <CODE>toString()</CODE>
  *
- * @extends User
  * @author Emily Beaudoin
  */
 public class Employee extends User

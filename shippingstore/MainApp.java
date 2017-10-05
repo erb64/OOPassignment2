@@ -18,7 +18,7 @@ public class MainApp {
      * with ShippingStore to be safe.
      *
      * @param args this program expects no command line arguments
-     * @throws Exception
+     * @throws Exception for some reason
      */
     public static void main(String[] args) throws Exception {
         Scanner in = new Scanner(System.in);
@@ -38,11 +38,12 @@ public class MainApp {
                 + "\t8. Complete a shipping transation\n"
                 + "\t9. Show completed shipping transations\n"
                 + "\t10. Exit program.\n";
-        String packageMessage = "\nPlease type description of package with the following pattern:\n"
-                            + "\n TRACKING# SPECIFICATION CLASS ";
+        String packageMessage = "Please type description of package with the following pattern:\n"
+                            + "\nTRACKING# SPECIFICATION CLASS ";
 
-        String showOptions = "\nSpecifications: Fragile, Books, Catalogs, Do-not-Bend, N/A.\n"
-                            + "Mailing Classes: First-Class, Priority, Retail, Ground, Metro. \n";
+        String showOptions =  "----------Options----------\n"
+                            + "Specifications: Fragile, Books, Catalogs, Do-not-Bend, N/A.\n"
+                            + "Mailing Classes: First-Class, Priority, Retail, Ground, Metro.\n";
 
         System.out.println(welcomeMessage);
 
@@ -60,6 +61,7 @@ public class MainApp {
                     System.out.println("Please enter the type of package you wish to add: (Envelope, Box, Crate, or Drum)");
                     type = in.nextLine();
                     String temp[];
+                    System.out.print(showOptions);
                     switch(type){
                         case "Envelope":
                             System.out.print(packageMessage + "HEIGHT WIDTH\n"
@@ -98,6 +100,7 @@ public class MainApp {
                             packages.addOrder(temp[0], type, temp[1], temp[2], temp[3], temp[4]);
                             break;
                         case "Drum":
+                            System.out.print("Materials: Plastic, Fiber\n");
                             System.out.print(packageMessage + "MATERIAL DIAMETER\n"
                                 + "example:\n8U4NW Do-not-Bend Priority Plastic 35\n");
                             inTemp = in.nextLine();
@@ -136,34 +139,34 @@ public class MainApp {
                     switch(type){
                         case "Employee":
                             System.out.print("Please type description of the Employee with the following pattern:\n"
-                                + "\nID# FIRST-NAME LAST-NAME SS# MONTHLY-SALARY BANK-ACCOUNT\n"
-                                + "example:\n019245 Rick Sanchez 000114444 3456.23 1234567890\n");
+                                + "\nFIRST-NAME LAST-NAME SS# MONTHLY-SALARY BANK-ACCOUNT\n"
+                                + "example:\nRick Sanchez 000114444 3456.23 1234567890\n");
                             inTemp = in.nextLine();
                             utemp = inTemp.split(" ");
 
-                            if (utemp.length != 6) {
+                            if (utemp.length != 5) {
                                 System.out.println("Not correct number of fields to process.");
                                 break;
                             }
-                            users.addUser(type, utemp[0], utemp[1], utemp[2], utemp[3], utemp[4], utemp[5]);
+                            users.addUser(type, utemp[0], utemp[1], utemp[2], utemp[3], utemp[4]);
                             break;
                         case "Customer":
                             System.out.print("Please type description of the Customer with the following pattern:\n"
                                 + "\nID# FIRST-NAME LAST-NAME PHONE-NUMBER ADDRESS\n"
-                                + "example:\n019245 Jesse Lacey 555-867-5309 601 University Drive, San Marcos, TX, 78666\n");
+                                + "example:\nJesse Lacey 555-867-5309 601 University Drive, San Marcos, TX, 78666\n");
                             inTemp = in.nextLine();
                             utemp = inTemp.split(" ");
 
-                            if (utemp.length < 6) {
+                            if (utemp.length < 5) {
                                 System.out.println("Not correct number of fields to process.");
                                 break;
                             }
 
                             String address = new String();
-                            for (int i = 4; i < utemp.length; i++)
+                            for (int i = 3; i < utemp.length; i++)
                                 address += (utemp[i] + " ");
 
-                            users.addUser(type, utemp[0], utemp[1], utemp[2], utemp[3], address, "");
+                            users.addUser(type, utemp[0], utemp[1], utemp[2], address, "");
                             break;
                         default:
                             System.out.println("That is not a valid type. Returning to main menu.");
@@ -215,8 +218,10 @@ public class MainApp {
 
                     transactions.addTransaction(c, e, p, atemp[2], atemp[3], atemp[4]);
                 case "9":
-                    //show completed transactions
+                    transactions.showTransactions();
+                    break;
                 case "10":
+                    break;
                 case "help":
                     System.out.println(welcomeMessage);
                     break;

@@ -186,8 +186,22 @@ public class PackageDatabase
      *    Box: Volume in inches cubed 0-999999
      *    Crate: Content of the crate 
      *    Drum: diameter in inches 0-999
-     * @param toAdd the <CODE>PackageOrder</CODE> object to add to the
-     * <CODE>packageOrderList</CODE>
+     * @param trackingnumber the <CODE>String</CODE> representing tracking number
+     * 
+     * @param type the <CODE>String</CODE> representing the type of package
+     * 
+     * @param specification the <CODE>String</CODE> representing the specification 
+     * of the package
+     *
+     * @param mailingclass the <CODE>String</CODE> which represents the mailing
+     * class of the package
+     *
+     * @param special1 the <CODE>String</CODE> which represents something different 
+     * for each type of package. see above
+     *
+     * @param special2 the <CODE>String</CODE> which represents something different 
+     * for each type of package. see above
+     *
      */
     public void addOrder(String trackingnumber, String type, String specification, 
         String mailingclass, String special1, String special2) {
@@ -255,15 +269,22 @@ public class PackageDatabase
         }
         else if (type.equals("Crate"))
         {
-            if ((Float.parseFloat(special1) < 0)) {
-                System.out.println("Invalid load weight:\n"
-                    + "The maximum load weight of the crate cannot be negative");
+            try{
+                if ((Float.parseFloat(special1) < 0)) {
+                    System.out.println("Invalid load weight:\n"
+                        + "The maximum load weight of the crate cannot be negative");
+                return;
+                }
+
+                // If it passed all the checks, add the order to the list
+                packageOrderList.add(new Crate(trackingnumber, specification, mailingclass,
+                    Float.parseFloat(special1), special2));
+            }
+            catch(NumberFormatException e){
+                System.out.println("Invalid weight:\n"
+                    + "must be a real number");
                 return;
             }
-
-            // If it passed all the checks, add the order to the list
-            packageOrderList.add(new Crate(trackingnumber, specification, mailingclass,
-                    Float.parseFloat(special1), special2));
         }
         else if (type.equals("Drum"))
         {
@@ -334,7 +355,7 @@ public class PackageDatabase
      * This method opens <CODE>"PackageOrderDB.ser"</CODE> and overwrites it with a serialization of
      * all the package orders in the <CODE>PackageOrderList</CODE>.
      * This should be the last method to be called before exiting the program.
-     * @throws IOException
+     * @throws IOException if it cannot create a file in the current directory
      */
     public void flush() throws IOException 
     {

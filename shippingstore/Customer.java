@@ -5,7 +5,6 @@ package shippingstore;
  * A customer bject can also call the two override methods <CODE>toString()</CODE> 
  * and <CODE>equals()</CODE>
  *
- * @extends User
  * @author Emily Beaudoin
  */
 public class Customer extends User

@@ -34,9 +34,6 @@ public class Transaction implements Serializable
      *
      * @param deliverDate a <b><CODE>Date</CODE></b> that represents the day the package was received
      *
-     * @param lastName a <b><CODE>String</CODE></b> that represents the last name of the 
-     * user
-     *
      * @param cost a <b><CODE>Float</CODE></b> that represents the cost of the transaction
      *
      * @param employeeID a <b><CODE>Integer</CODE></b> that represents the ID of the employee 

@@ -45,7 +45,7 @@ public class TransactionDatabase
         System.out.println(" ------------------------------------------------------------------------------ ");
 
         for (Transaction t : tlist){
-            System.out.printf("| %12s| %11s| %3$te/%3$tm/%3$tY | %4$te/%4$tm/%4$tY | %8.2f | %11d |", 
+            System.out.printf("| %12s| %11s| %3$tm/%3$te/%3$tY | %4$tm/%4$te/%4$tY | %5$8.2f | %6$11d |\n", 
                               t.getCustomerId(), t.getTrackingNumber(), t.getShippingDate(), 
                               t.getDeliverDate(), t.getCost(), t.getEmployeeId());
         }
@@ -60,7 +60,7 @@ public class TransactionDatabase
      * the transactionList ArrayList in no particular order. The file is then closed
      * during the duration of the program until <CODE>flush()</CODE> is called.
      *
-     * @throws IOException
+     * @throws IOException if it cannot create a file in the current directory
      */
     public TransactionDatabase() throws IOException 
     {
@@ -116,7 +116,7 @@ public class TransactionDatabase
      * 
      * @param employee the <CODE>User</CODE> object who completed the transaction
      * 
-     * @param package the <CODE>PackageOrder</CODE> object shipped for this transaction
+     * @param p the <CODE>PackageOrder</CODE> object shipped for this transaction
      *
      * @param ship the <CODE>String</CODE> which represents the shipping date 
      *
@@ -161,7 +161,7 @@ public class TransactionDatabase
      * This method opens <CODE>"TransactionDB.ser"</CODE> and overwrites it with a serialization of
      * all the package orders in the <CODE>transactionList</CODE>.
      * This should be the last method to be called before exiting the program.
-     * @throws IOException
+     * @throws IOException if it cannot create a file in the current directory
      */
     public void flush() throws IOException 
     {

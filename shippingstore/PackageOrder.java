@@ -23,6 +23,8 @@ public class PackageOrder implements Comparable, Serializable
      * package order object.
      *
      * @param trackingnumber a <b><CODE>String</CODE></b> that represents the tracking number
+     * 
+     * @param type a <b><CODE>String</CODE></b> that represents the type of package
      *
      * @param specification a <b><CODE>String</CODE></b> that represents the specification.
      * Specification: Fragile, Books, Catalogs, Do-not-Bend, N/A - one per package

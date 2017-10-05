@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 public class UserDatabase 
 {
     private ArrayList<User> userList;
+    private Integer lastID = 100000;
 
     /**
      * Private method used as an auxiliary method to display a given ArrayList
@@ -130,17 +131,15 @@ public class UserDatabase
      * 1. The user is not already in the ArrayList according to the ID number
      * as the unique key.
      * <p>
-     * 2. The ID number is 6 digit numeric value
-     * <p>
-     * 3. The Type of the user can be only one of the following:
+     * 2. The Type of the user can be only one of the following:
      *    Employee or Customer
      * <p>
-     * 4. For Employees: Social security 
+     * 3. For Employees: Social security number must be 9 digits,
+     *                   Salary must be non-negative 
+     *                   Bank Account number must be between 8 and 15 digits
      *
      * @param type the <CODE>String</CODE> which represents the type of user to be 
      * added
-     *
-     * @param idNumber the <CODE>String</CODE> which represents the user's ID number
      * 
      * @param firstName the <CODE>String</CODE> that is the user's first name
      *
@@ -155,20 +154,9 @@ public class UserDatabase
      * @param special3 the <CODE>String</CODE> that is either the employee's account
      * number for direct deposit OR ignored for customer typed users
      */
-    public void addUser(String type, String idNumber, String firstName, String lastName,
+    public void addUser(String type, String firstName, String lastName,
                          String special1, String special2, String special3) 
     {
-
-        if (this.findUser(idNumber) != -1) {
-            System.out.println("User already exists in database. \n");
-            return;
-        }
-
-        if (!idNumber.matches("[0-9]{6}")) {
-            System.out.println("Invalid ID Number: not proper format."
-                + "ID Number must be 6 digit positive number.\n");
-            return;
-        }
 
         if (type.equals("Employee")){
             if (!special1.matches("[0-9]{9}")) {
@@ -177,9 +165,15 @@ public class UserDatabase
                 return;
             }
 
-            if (Float.parseFloat(special2) < 0) {
-                System.out.println("Invalid salary:\n"
-                    + "Monthly salary cannot be negative\n");
+            try{
+                if (Float.parseFloat(special2) < 0) {
+                    System.out.println("Invalid salary:\n"
+                        + "Monthly salary cannot be negative\n");
+                    return;
+                }
+            }
+            catch(NumberFormatException e){
+                System.out.println("Error: salary must be a real number");
                 return;
             }
 
@@ -190,12 +184,12 @@ public class UserDatabase
             }
 
             // If it passed all the checks, add the user to the list
-            userList.add(new Employee(Integer.parseInt(idNumber), firstName, lastName, 
+            userList.add(new Employee(++lastID, firstName, lastName, 
                     Integer.parseInt(special1), Float.parseFloat(special2), 
                     Integer.parseInt(special3)));
         } else {// (type.equals("Customer"))
             // If it passed all the checks, add the order to the list
-            userList.add(new Customer(Integer.parseInt(idNumber), firstName, lastName, 
+            userList.add(new Customer(++lastID, firstName, lastName, 
                     special1, special2)); //phone, address
         }
 
@@ -287,10 +281,16 @@ public class UserDatabase
                     ((Employee)userList.get(index)).setSocial(Integer.parseInt(update));
 
             } else if (field.equalsIgnoreCase("Salary")) {
-                if (!(Float.parseFloat(update) > 0))
-                    System.out.println("\nError: Salary must be greater than 0.\n");
-                else 
-                    ((Employee)userList.get(index)).setSalary(Float.parseFloat(update));
+                try{
+                    if (!(Float.parseFloat(update) > 0))
+                        System.out.println("\nError: Salary must be greater than 0.\n");
+                    else 
+                        ((Employee)userList.get(index)).setSalary(Float.parseFloat(update));
+                }
+                catch(NumberFormatException e){
+                    System.out.println("Error: salary must be a real number");
+                    return;
+                }
             } else if (field.equalsIgnoreCase("Account")) {
                 if (!update.matches("[0-9]{8,15}"))
                     System.out.println("\nError: Account number must be between 8 and 15 digits\n");
@@ -319,7 +319,7 @@ public class UserDatabase
      * This method opens <CODE>"UserDB.ser"</CODE> and overwrites it with a serialization of
      * all the users in the <CODE>userList</CODE>.
      * This should be the last method to be called before exiting the program.
-     * @throws IOException
+     * @throws IOException if it cannot create a file in the current directory
      */
     public void flush() throws IOException 
     {

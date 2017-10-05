@@ -7,7 +7,6 @@ package shippingstore;
  * override methods (via inheritance from PackageOrder)
  * <CODE>toString()</CODE> and <CODE>equals()</CODE>
  *
- * @extends PackageOrder
  * @author Emily Beaudoin
  */
 public class Crate extends PackageOrder
